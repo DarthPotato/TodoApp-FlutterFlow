@@ -93,8 +93,7 @@ class _LoginWidgetState extends State<LoginWidget>
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
                         'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/todo-z94dau/assets/zi7g366yu8lr/yilmazlogo.png',
-                        width: 146.9,
-                        height: 71.3,
+                        width: 149.0,
                         fit: BoxFit.cover,
                       ),
                     ),
