@@ -182,7 +182,9 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                                     image: DecorationImage(
                                       fit: BoxFit.fill,
                                       image: CachedNetworkImageProvider(
-                                        _model.uploadedFileUrl_profilePhoto,
+                                        getCORSProxyUrl(
+                                          _model.uploadedFileUrl_profilePhoto,
+                                        ),
                                       ),
                                     ),
                                     shape: BoxShape.circle,
