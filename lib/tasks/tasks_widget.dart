@@ -1,4 +1,5 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/api_requests/api_calls.dart';
 import '/backend/backend.dart';
 import '/components/add_task_widget.dart';
 import '/components/task_widget.dart';
@@ -203,6 +204,61 @@ class _TasksWidgetState extends State<TasksWidget> {
                             ),
                           );
                         },
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: AlignmentDirectional(0.0, 0.0),
+                  child: FutureBuilder<ApiCallResponse>(
+                    future: RandomInspirationalZenQuoteCall.call(),
+                    builder: (context, snapshot) {
+                      // Customize what your widget looks like when it's loading.
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: SizedBox(
+                            width: 50.0,
+                            height: 50.0,
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                FlutterFlowTheme.of(context).primary,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      final textRandomInspirationalZenQuoteResponse =
+                          snapshot.data!;
+
+                      return Text(
+                        '${valueOrDefault<String>(
+                          RandomInspirationalZenQuoteCall.quote(
+                            textRandomInspirationalZenQuoteResponse.jsonBody,
+                          ),
+                          '[randomquote]',
+                        )} - ${valueOrDefault<String>(
+                          RandomInspirationalZenQuoteCall.author(
+                            textRandomInspirationalZenQuoteResponse.jsonBody,
+                          ),
+                          '[author]',
+                        )}',
+                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                              font: GoogleFonts.rajdhani(
+                                fontWeight: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontWeight,
+                                fontStyle: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .fontStyle,
+                              ),
+                              letterSpacing: 0.0,
+                              fontWeight: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontWeight,
+                              fontStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .fontStyle,
+                            ),
                       );
                     },
                   ),

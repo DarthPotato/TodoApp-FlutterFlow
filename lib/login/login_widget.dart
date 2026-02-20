@@ -92,7 +92,9 @@ class _LoginWidgetState extends State<LoginWidget>
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: Image.network(
-                        'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/todo-z94dau/assets/zi7g366yu8lr/yilmazlogo.png',
+                        getCORSProxyUrl(
+                          'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/todo-z94dau/assets/zi7g366yu8lr/yilmazlogo.png',
+                        ),
                         width: 149.0,
                         fit: BoxFit.cover,
                       ),
