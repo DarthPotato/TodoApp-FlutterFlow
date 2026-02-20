@@ -1,0 +1,237 @@
+name: Create User Story Issues
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - copilot/add-user-stories
+
+permissions:
+  issues: write
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create user story labels and issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const userStories = [
+              {
+                label: { name: 'US 2', description: 'User Login', color: 'e4e669' },
+                title: 'US2: User Login',
+                body: `AS A user,
+            I WANT TO log into my account using my email and password,
+            SO THAT I can securely access my personal to-do list
+            AND manage my tasks from any device.
+
+            SCENARIO: Successful Login
+            GIVEN the user has a registered account and is on the login screen,
+            WHEN the user enters a valid email address and correct password,
+            AND clicks the "Log In" button,
+            THEN the system should authenticate the user via Firebase authentication
+            WITHIN 3 seconds,
+            AND redirect the user to the main task list screen
+            WITHIN 2 seconds.
+
+            SCENARIO: Incorrect Password
+            GIVEN the user is on the login screen,
+            WHEN the user enters a valid email address and an incorrect password,
+            AND clicks the "Log In" button,
+            THEN the system should display an error message stating "Incorrect email or password."
+            WITHIN 1 second,
+            AND remain on the login screen to allow the user to retry.
+
+            SCENARIO: Unregistered Email
+            GIVEN the user is on the login screen,
+            WHEN the user enters an email address that does not correspond to any registered account,
+            AND clicks the "Log In" button,
+            THEN the system should display an error message stating "No account found with this email."
+            WITHIN 1 second,
+            AND prompt the user to create a new account.
+
+            SCENARIO: Empty Fields
+            GIVEN the user is on the login screen,
+            WHEN the user leaves either the email or password field empty,
+            AND clicks the "Log In" button,
+            THEN the system should display a validation error message
+            WITHIN 1 second,
+            AND prevent the login process from proceeding.
+
+            SCENARIO: Network Error During Login
+            GIVEN the user is on the login screen,
+            WHEN the user enters valid credentials,
+            AND clicks the "Log In" button,
+            THEN if a network error occurs, the system should display an error message stating "Network error. Please try again later."
+            WITHIN 2 seconds,
+            AND allow the user to retry once the network is stable.`
+              },
+              {
+                label: { name: 'US 3', description: 'Create a Task', color: '0075ca' },
+                title: 'US3: Create a Task',
+                body: `AS A user,
+            I WANT TO create a new task by entering a title and optional details,
+            SO THAT I can add items to my to-do list to track work I need to complete.
+
+            SCENARIO: Successful Task Creation
+            GIVEN the user is on the main task list screen,
+            WHEN the user taps the "+" floating action button,
+            AND enters a task title in the provided field,
+            AND optionally adds details to the task,
+            AND submits the form,
+            THEN a new task should be saved to the Firebase database associated with the user's account
+            WITHIN 2 seconds,
+            AND the task should appear in the task list on the main screen
+            WITHIN 1 second.
+
+            SCENARIO: Missing Task Title
+            GIVEN the user is on the add task bottom sheet,
+            WHEN the user leaves the title field empty,
+            AND attempts to submit the form,
+            THEN the system should display a validation error stating "Please enter a task title"
+            WITHIN 1 second,
+            AND prevent the task from being saved until a title is provided.
+
+            SCENARIO: Task with Details
+            GIVEN the user is on the add task bottom sheet,
+            WHEN the user enters both a title and details for the task,
+            AND submits the form,
+            THEN the task should be saved with both the title and details preserved
+            WITHIN 2 seconds,
+            AND be accessible in the task detail view.
+
+            SCENARIO: Network Error During Task Creation
+            GIVEN the user is on the add task bottom sheet,
+            WHEN the user enters a task title and submits the form,
+            THEN if a network error occurs, the system should display an error message stating "Failed to save task. Please try again."
+            WITHIN 2 seconds,
+            AND allow the user to retry.`
+              },
+              {
+                label: { name: 'US 4', description: 'Mark Task as Complete', color: 'cfd3d7' },
+                title: 'US4: Mark Task as Complete',
+                body: `AS A user,
+            I WANT TO mark a task as completed using a checkbox,
+            SO THAT I can track my progress and remove completed items from my active task list.
+
+            SCENARIO: Successful Task Completion
+            GIVEN the user is on the main task list screen and has at least one active task,
+            WHEN the user taps the checkbox next to a task,
+            THEN the task should be marked as completed in the Firebase database
+            WITHIN 2 seconds,
+            AND the task should be removed from the active task list
+            WITHIN 1 second.
+
+            SCENARIO: Viewing Completed Tasks
+            GIVEN the user has marked one or more tasks as completed,
+            WHEN the user navigates to the completed tasks section,
+            THEN all tasks that have been marked as completed should be displayed
+            WITHIN 2 seconds.
+
+            SCENARIO: No Active Tasks Remain
+            GIVEN the user has marked all their tasks as completed,
+            WHEN the last task is marked as completed,
+            THEN the active task list should display an empty state message
+            WITHIN 1 second,
+            AND the completed task should appear in the completed tasks section.
+
+            SCENARIO: Network Error During Task Completion
+            GIVEN the user is on the main task list screen,
+            WHEN the user taps the checkbox to mark a task as completed,
+            THEN if a network error occurs, the system should display an error message stating "Failed to update task. Please try again."
+            WITHIN 2 seconds,
+            AND the task should remain in the active list until the update is confirmed.`
+              },
+              {
+                label: { name: 'US 5', description: 'Edit Task Details', color: 'e99695' },
+                title: 'US5: Edit Task Details',
+                body: `AS A user,
+            I WANT TO view and edit the title and details of an existing task,
+            SO THAT I can update task information as my needs change.
+
+            SCENARIO: Viewing Task Details
+            GIVEN the user is on the main task list screen,
+            WHEN the user taps on a task in the list,
+            THEN the task detail screen should open, displaying the task's current title and details
+            WITHIN 2 seconds.
+
+            SCENARIO: Successful Task Edit
+            GIVEN the user is on the task detail screen,
+            WHEN the user taps the edit icon to enter editing mode,
+            AND modifies the task title or details in the text fields,
+            AND taps the "Update Task" button,
+            THEN the task should be updated in the Firebase database with the new information
+            WITHIN 2 seconds,
+            AND the editing mode should be exited automatically
+            WITHIN 1 second.
+
+            SCENARIO: Edit Without Changes
+            GIVEN the user is on the task detail screen in editing mode,
+            WHEN the user taps the "Update Task" button without making any changes,
+            THEN the system should still save the task (with unchanged content)
+            WITHIN 2 seconds,
+            AND exit editing mode.
+
+            SCENARIO: Cancel Edit
+            GIVEN the user is on the task detail screen in editing mode,
+            WHEN the user navigates back without tapping "Update Task",
+            THEN any unsaved changes should be discarded,
+            AND the task should retain its original title and details.
+
+            SCENARIO: Network Error During Edit
+            GIVEN the user is on the task detail screen in editing mode,
+            WHEN the user makes changes and taps "Update Task",
+            THEN if a network error occurs, the system should display an error message stating "Failed to update task. Please try again."
+            WITHIN 2 seconds,
+            AND remain in editing mode so the user can retry.`
+              }
+            ];
+
+            for (const story of userStories) {
+              // Create or update label
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: story.label.name,
+                });
+                console.log(`Label "${story.label.name}" already exists, skipping.`);
+              } catch (e) {
+                if (e.status === 404) {
+                  await github.rest.issues.createLabel({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    name: story.label.name,
+                    description: story.label.description,
+                    color: story.label.color,
+                  });
+                  console.log(`Created label: ${story.label.name}`);
+                } else {
+                  throw e;
+                }
+              }
+
+              // Check if issue already exists
+              const existingIssues = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'all',
+                labels: story.label.name,
+              });
+
+              if (existingIssues.data.length > 0) {
+                console.log(`Issue for "${story.title}" already exists, skipping.`);
+                continue;
+              }
+
+              // Create issue
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: story.title,
+                body: story.body,
+                labels: [story.label.name],
+              });
+              console.log(`Created issue #${issue.data.number}: ${story.title}`);
+            }
